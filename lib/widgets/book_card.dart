@@ -22,37 +22,49 @@ class BookCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Book Cover
+            // Book Cover with Hero Animation
             Stack(
               children: [
-                Container(
-                  height: 200,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
+                Hero(
+                  tag: 'book_${book.id}',
+                  child: Container(
+                    height: 200,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.network(
+                        book.coverImageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Theme.of(context).colorScheme.primary,
+                                  Theme.of(context).colorScheme.secondary,
+                                ],
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.menu_book_rounded,
+                              size: 64,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      book.coverImageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Theme.of(context).colorScheme.primary,
-                          child: const Icon(
-                            Icons.menu_book_rounded,
-                            size: 64,
-                            color: Colors.white,
-                          ),
-                        );
-                      },
                     ),
                   ),
                 ),
@@ -64,13 +76,13 @@ class BookCard extends StatelessWidget {
                     left: 0,
                     right: 0,
                     child: Container(
-                      height: 4,
+                      height: 5,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
+                          bottomLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(16),
                         ),
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.2),
                       ),
                       child: FractionallySizedBox(
                         alignment: Alignment.centerLeft,
@@ -78,10 +90,15 @@ class BookCard extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(12),
-                              bottomRight: Radius.circular(12),
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(16),
                             ),
-                            color: Theme.of(context).colorScheme.primary,
+                            gradient: LinearGradient(
+                              colors: [
+                                Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.secondary,
+                              ],
+                            ),
                           ),
                         ),
                       ),

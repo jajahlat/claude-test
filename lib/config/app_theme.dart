@@ -2,35 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Sufi-inspired color palette
-  static const Color primaryGreen = Color(0xFF2D5F3F); // Deep green
-  static const Color primaryGold = Color(0xFFD4AF37); // Islamic gold
-  static const Color accentTeal = Color(0xFF4A7C7E); // Calm teal
-  static const Color bgCream = Color(0xFFF5F1E8); // Warm cream
-  static const Color textDark = Color(0xFF1A1A1A);
-  static const Color textLight = Color(0xFFE8E8E8);
+  // Modern Faydabook color palette
+  static const Color primaryEmerald = Color(0xFF4BA67D); // Emerald Green
+  static const Color accentGold = Color(0xFFD8CBAF); // Sand Gold
+  static const Color surfaceIvory = Color(0xFFFAFAFA); // Ivory
+  static const Color surfaceDarkCharcoal = Color(0xFF0E0E0E); // Deep Charcoal
+  static const Color textDark = Color(0xFF222222); // Neutral Gray Dark
+  static const Color textLight = Color(0xFFF8F8F8); // Neutral Gray Light
+
+  // Additional supporting colors
+  static const Color emeraldLight = Color(0xFF6BC29A);
+  static const Color emeraldDark = Color(0xFF3A8C65);
+  static const Color goldLight = Color(0xFFE5DCC8);
 
   // Dark mode colors
-  static const Color darkBg = Color(0xFF121212);
-  static const Color darkSurface = Color(0xFF1E1E1E);
-  static const Color darkCard = Color(0xFF2C2C2C);
+  static const Color darkBg = surfaceDarkCharcoal;
+  static const Color darkSurface = Color(0xFF1A1A1A);
+  static const Color darkCard = Color(0xFF252525);
 
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    primaryColor: primaryGreen,
-    scaffoldBackgroundColor: bgCream,
+    primaryColor: primaryEmerald,
+    scaffoldBackgroundColor: surfaceIvory,
     colorScheme: const ColorScheme.light(
-      primary: primaryGreen,
-      secondary: primaryGold,
-      tertiary: accentTeal,
+      primary: primaryEmerald,
+      secondary: accentGold,
+      tertiary: emeraldLight,
       surface: Colors.white,
-      background: bgCream,
+      surfaceContainerHighest: surfaceIvory,
       error: Color(0xFFB00020),
       onPrimary: Colors.white,
       onSecondary: textDark,
       onSurface: textDark,
-      onBackground: textDark,
     ),
 
     // Typography
@@ -86,15 +90,45 @@ class AppTheme {
     cardTheme: CardTheme(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
       ),
       color: Colors.white,
+      shadowColor: Colors.black.withOpacity(0.08),
+    ),
+
+    // Elevated Button
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+      ),
+    ),
+
+    // Input Decoration
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: const BorderSide(color: primaryEmerald, width: 2),
+      ),
     ),
 
     // Bottom Navigation Bar
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
-      selectedItemColor: primaryGreen,
+      selectedItemColor: primaryEmerald,
       unselectedItemColor: Colors.grey,
       elevation: 8,
       type: BottomNavigationBarType.fixed,
@@ -104,19 +138,18 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    primaryColor: primaryGold,
+    primaryColor: accentGold,
     scaffoldBackgroundColor: darkBg,
     colorScheme: const ColorScheme.dark(
-      primary: primaryGold,
-      secondary: accentTeal,
-      tertiary: primaryGreen,
+      primary: accentGold,
+      secondary: primaryEmerald,
+      tertiary: emeraldLight,
       surface: darkSurface,
-      background: darkBg,
+      surfaceContainerHighest: darkCard,
       error: Color(0xFFCF6679),
       onPrimary: textDark,
       onSecondary: textLight,
       onSurface: textLight,
-      onBackground: textLight,
     ),
 
     // Typography
@@ -172,15 +205,45 @@ class AppTheme {
     cardTheme: CardTheme(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
       ),
       color: darkCard,
+      shadowColor: Colors.black.withOpacity(0.3),
+    ),
+
+    // Elevated Button
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+      ),
+    ),
+
+    // Input Decoration
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: darkCard,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(24),
+        borderSide: const BorderSide(color: accentGold, width: 2),
+      ),
     ),
 
     // Bottom Navigation Bar
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: darkSurface,
-      selectedItemColor: primaryGold,
+      selectedItemColor: accentGold,
       unselectedItemColor: Colors.grey,
       elevation: 8,
       type: BottomNavigationBarType.fixed,

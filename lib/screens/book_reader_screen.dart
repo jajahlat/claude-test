@@ -7,6 +7,8 @@ import 'package:uuid/uuid.dart';
 import '../models/book.dart';
 import '../models/reading_progress.dart';
 import '../providers/book_provider.dart';
+import '../providers/reading_preferences_provider.dart';
+import '../widgets/reading_settings_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
@@ -286,45 +288,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
   void _showReadingSettings() {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Reading Settings',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 24),
-              ListTile(
-                leading: const Icon(Icons.format_size_rounded),
-                title: const Text('Font Size'),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                onTap: () {
-                  // Show font size selector
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.color_lens_rounded),
-                title: const Text('Theme'),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                onTap: () {
-                  // Show theme selector
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.brightness_6_rounded),
-                title: const Text('Brightness'),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                onTap: () {
-                  // Show brightness slider
-                },
-              ),
-            ],
-          ),
-        );
+        return const ReadingSettingsSheet();
       },
     );
   }

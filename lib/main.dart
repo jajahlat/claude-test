@@ -9,6 +9,7 @@ import 'providers/book_provider.dart';
 import 'providers/audio_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/reading_preferences_provider.dart';
 import 'screens/splash_screen.dart';
 import 'services/database_service.dart';
 
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider(prefs)),
+        ChangeNotifierProvider(create: (_) => ReadingPreferencesProvider(prefs)),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => BookProvider()),
         ChangeNotifierProvider(create: (_) => AudioProvider()),

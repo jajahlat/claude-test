@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/audiobook.dart';
@@ -27,243 +28,338 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(widget.audioBook.title),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.playlist_play_rounded),
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.playlist_play_rounded, color: Colors.white),
+            ),
             onPressed: _showChaptersList,
           ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'sleep_timer') {
-                _showSleepTimer();
-              } else if (value == 'share') {
-                // Share audiobook
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'sleep_timer',
-                child: Row(
-                  children: [
-                    Icon(Icons.timer_rounded),
-                    SizedBox(width: 8),
-                    Text('Sleep Timer'),
-                  ],
-                ),
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
               ),
-              const PopupMenuItem(
-                value: 'share',
-                child: Row(
-                  children: [
-                    Icon(Icons.share_rounded),
-                    SizedBox(width: 8),
-                    Text('Share'),
-                  ],
-                ),
-              ),
-            ],
+              child: const Icon(Icons.timer_rounded, color: Colors.white),
+            ),
+            onPressed: _showSleepTimer,
           ),
+          const SizedBox(width: 8),
         ],
       ),
-      body: Consumer<AudioProvider>(
-        builder: (context, audioProvider, _) {
-          final currentChapter = audioProvider.currentChapter;
-          final isPlaying = audioProvider.isPlaying;
-          final currentPosition = audioProvider.currentPosition;
-          final totalDuration = audioProvider.totalDuration;
-          final playbackSpeed = audioProvider.playbackSpeed;
+      body: Stack(
+        children: [
+          // Gradient Background
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.secondary,
+                  Theme.of(context).colorScheme.tertiary,
+                ],
+                stops: const [0.0, 0.6, 1.0],
+              ),
+            ),
+          ),
 
-          return Column(
-            children: [
-              // Cover Image
-              Expanded(
-                flex: 3,
-                child: Container(
-                  margin: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      widget.audioBook.coverImageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Theme.of(context).colorScheme.primary,
-                          child: const Icon(
-                            Icons.headphones_rounded,
-                            size: 100,
-                            color: Colors.white,
+          Consumer<AudioProvider>(
+            builder: (context, audioProvider, _) {
+              final currentChapter = audioProvider.currentChapter;
+              final isPlaying = audioProvider.isPlaying;
+              final currentPosition = audioProvider.currentPosition;
+              final totalDuration = audioProvider.totalDuration;
+              final playbackSpeed = audioProvider.playbackSpeed;
+
+              return SafeArea(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 32),
+
+                    // Cover Image with Hero Animation
+                    Expanded(
+                      flex: 3,
+                      child: Hero(
+                        tag: 'audio_${widget.audioBook.id}',
+                        child: Container(
+                          margin: const EdgeInsets.all(40),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.4),
+                                blurRadius: 40,
+                                offset: const Offset(0, 20),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-
-              // Chapter Info
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    Text(
-                      currentChapter?.title ?? widget.audioBook.title,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.audioBook.narrator,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // Progress Bar
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    Slider(
-                      value: currentPosition.inSeconds.toDouble(),
-                      max: totalDuration.inSeconds.toDouble(),
-                      onChanged: (value) {
-                        audioProvider.seek(Duration(seconds: value.toInt()));
-                      },
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(_formatDuration(currentPosition)),
-                        Text(_formatDuration(totalDuration)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Controls
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // Previous Chapter
-                    IconButton(
-                      icon: const Icon(Icons.skip_previous_rounded),
-                      iconSize: 48,
-                      onPressed: audioProvider.playPreviousChapter,
-                    ),
-
-                    // Rewind 15s
-                    IconButton(
-                      icon: const Icon(Icons.replay_15_rounded),
-                      iconSize: 36,
-                      onPressed: () {
-                        final newPosition =
-                            currentPosition - const Duration(seconds: 15);
-                        audioProvider.seek(newPosition);
-                      },
-                    ),
-
-                    // Play/Pause
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          isPlaying
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(24),
+                            child: Image.network(
+                              widget.audioBook.coverImageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                                        Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+                                      ],
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.headphones_rounded,
+                                    size: 100,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                        iconSize: 56,
-                        color: Colors.white,
-                        onPressed: () {
-                          if (isPlaying) {
-                            audioProvider.pause();
-                          } else {
-                            audioProvider.resume();
-                          }
-                        },
                       ),
                     ),
 
-                    // Forward 15s
-                    IconButton(
-                      icon: const Icon(Icons.forward_15_rounded),
-                      iconSize: 36,
-                      onPressed: () {
-                        final newPosition =
-                            currentPosition + const Duration(seconds: 15);
-                        audioProvider.seek(newPosition);
-                      },
+                    // Chapter Info
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Column(
+                        children: [
+                          Text(
+                            currentChapter?.title ?? widget.audioBook.title,
+                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.audioBook.narrator,
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  color: Colors.white.withOpacity(0.9),
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
 
-                    // Next Chapter
-                    IconButton(
-                      icon: const Icon(Icons.skip_next_rounded),
-                      iconSize: 48,
-                      onPressed: audioProvider.playNextChapter,
+                    const SizedBox(height: 32),
+
+                    // Progress Bar
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Column(
+                        children: [
+                          SliderTheme(
+                            data: SliderThemeData(
+                              trackHeight: 4,
+                              thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 8,
+                              ),
+                              overlayShape: const RoundSliderOverlayShape(
+                                overlayRadius: 16,
+                              ),
+                              activeTrackColor: Colors.white,
+                              inactiveTrackColor: Colors.white.withOpacity(0.3),
+                              thumbColor: Colors.white,
+                              overlayColor: Colors.white.withOpacity(0.2),
+                            ),
+                            child: Slider(
+                              value: currentPosition.inSeconds.toDouble(),
+                              max: totalDuration.inSeconds.toDouble(),
+                              onChanged: (value) {
+                                audioProvider.seek(Duration(seconds: value.toInt()));
+                              },
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _formatDuration(currentPosition),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                _formatDuration(totalDuration),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
+
+                    const SizedBox(height: 24),
+
+                    // Controls
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // Previous Chapter
+                          IconButton(
+                            icon: const Icon(Icons.skip_previous_rounded),
+                            iconSize: 40,
+                            color: Colors.white,
+                            onPressed: audioProvider.playPreviousChapter,
+                          ),
+
+                          // Rewind 15s
+                          IconButton(
+                            icon: const Icon(Icons.replay_15_rounded),
+                            iconSize: 32,
+                            color: Colors.white,
+                            onPressed: () {
+                              final newPosition =
+                                  currentPosition - const Duration(seconds: 15);
+                              audioProvider.seek(newPosition);
+                            },
+                          ),
+
+                          // Play/Pause
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                isPlaying
+                                    ? Icons.pause_rounded
+                                    : Icons.play_arrow_rounded,
+                              ),
+                              iconSize: 48,
+                              color: Theme.of(context).colorScheme.primary,
+                              onPressed: () {
+                                if (isPlaying) {
+                                  audioProvider.pause();
+                                } else {
+                                  audioProvider.resume();
+                                }
+                              },
+                            ),
+                          ),
+
+                          // Forward 15s
+                          IconButton(
+                            icon: const Icon(Icons.forward_15_rounded),
+                            iconSize: 32,
+                            color: Colors.white,
+                            onPressed: () {
+                              final newPosition =
+                                  currentPosition + const Duration(seconds: 15);
+                              audioProvider.seek(newPosition);
+                            },
+                          ),
+
+                          // Next Chapter
+                          IconButton(
+                            icon: const Icon(Icons.skip_next_rounded),
+                            iconSize: 40,
+                            color: Colors.white,
+                            onPressed: audioProvider.playNextChapter,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Playback Speed
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.speed_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          DropdownButton<double>(
+                            value: playbackSpeed,
+                            dropdownColor: Theme.of(context).colorScheme.surface,
+                            underline: const SizedBox(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            items: [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
+                                .map((speed) => DropdownMenuItem(
+                                      value: speed,
+                                      child: Text('${speed}x'),
+                                    ))
+                                .toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                audioProvider.setPlaybackSpeed(value);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
                   ],
                 ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Playback Speed
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.speed_rounded),
-                    const SizedBox(width: 8),
-                    DropdownButton<double>(
-                      value: playbackSpeed,
-                      items: [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
-                          .map((speed) => DropdownMenuItem(
-                        value: speed,
-                        child: Text('${speed}x'),
-                      ))
-                          .toList(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          audioProvider.setPlaybackSpeed(value);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 32),
-            ],
-          );
-        },
+              );
+            },
+          ),
+        ],
       ),
     );
   }

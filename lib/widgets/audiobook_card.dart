@@ -22,37 +22,49 @@ class AudioBookCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Cover
+            // Cover with Hero Animation
             Stack(
               children: [
-                Container(
-                  height: 150,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
+                Hero(
+                  tag: 'audio_${audioBook.id}',
+                  child: Container(
+                    height: 150,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.network(
+                        audioBook.coverImageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Theme.of(context).colorScheme.secondary,
+                                  Theme.of(context).colorScheme.tertiary,
+                                ],
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.headphones_rounded,
+                              size: 64,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      audioBook.coverImageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Theme.of(context).colorScheme.secondary,
-                          child: const Icon(
-                            Icons.headphones_rounded,
-                            size: 64,
-                            color: Colors.white,
-                          ),
-                        );
-                      },
                     ),
                   ),
                 ),
@@ -64,13 +76,13 @@ class AudioBookCard extends StatelessWidget {
                     left: 0,
                     right: 0,
                     child: Container(
-                      height: 4,
+                      height: 5,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
                         ),
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.2),
                       ),
                       child: FractionallySizedBox(
                         alignment: Alignment.centerLeft,
@@ -78,10 +90,15 @@ class AudioBookCard extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(12),
-                              bottomRight: Radius.circular(12),
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
                             ),
-                            color: Theme.of(context).colorScheme.secondary,
+                            gradient: LinearGradient(
+                              colors: [
+                                Theme.of(context).colorScheme.secondary,
+                                Theme.of(context).colorScheme.tertiary,
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -92,7 +109,7 @@ class AudioBookCard extends StatelessWidget {
                 Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(20),
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -102,11 +119,18 @@ class AudioBookCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.play_circle_filled_rounded,
-                        size: 48,
-                        color: Colors.white,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.play_arrow_rounded,
+                          size: 32,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                       ),
                     ),
                   ),
