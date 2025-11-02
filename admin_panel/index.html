@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faydabook Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Faydabook Admin Panel</h1>
+            <p>Manage books and audiobooks for the Faydabook app</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="showTab('books')">Books</button>
+            <button class="tab-btn" onclick="showTab('audiobooks')">Audiobooks</button>
+            <button class="tab-btn" onclick="showTab('quotes')">Daily Quotes</button>
+        </nav>
+
+        <!-- Books Tab -->
+        <div id="books-tab" class="tab-content active">
+            <div class="section-header">
+                <h2>Manage Books</h2>
+                <button class="btn-primary" onclick="showAddBookForm()">+ Add New Book</button>
+            </div>
+
+            <!-- Add Book Form -->
+            <div id="add-book-form" class="form-container" style="display: none;">
+                <h3>Add New Book</h3>
+                <form id="bookForm">
+                    <div class="form-group">
+                        <label>Title *</label>
+                        <input type="text" id="book-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Author *</label>
+                        <input type="text" id="book-author" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <textarea id="book-description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Language *</label>
+                            <select id="book-language" required>
+                                <option value="">Select Language</option>
+                                <option value="ar">Arabic</option>
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Type *</label>
+                            <select id="book-type" required>
+                                <option value="">Select Type</option>
+                                <option value="epub">EPUB</option>
+                                <option value="pdf">PDF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Categories * (comma-separated)</label>
+                        <input type="text" id="book-categories" placeholder="e.g. Tafsir, Poetry">
+                    </div>
+                    <div class="form-group">
+                        <label>Cover Image *</label>
+                        <input type="file" id="book-cover" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Book File (EPUB/PDF) *</label>
+                        <input type="file" id="book-file" accept=".epub,.pdf" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Pages</label>
+                        <input type="number" id="book-pages" min="0">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Book</button>
+                        <button type="button" class="btn-secondary" onclick="hideAddBookForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Books List -->
+            <div id="books-list" class="items-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cover</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Language</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="books-table-body">
+                        <!-- Books will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Audiobooks Tab -->
+        <div id="audiobooks-tab" class="tab-content">
+            <div class="section-header">
+                <h2>Manage Audiobooks</h2>
+                <button class="btn-primary" onclick="showAddAudiobookForm()">+ Add New Audiobook</button>
+            </div>
+
+            <!-- Add Audiobook Form -->
+            <div id="add-audiobook-form" class="form-container" style="display: none;">
+                <h3>Add New Audiobook</h3>
+                <form id="audiobookForm">
+                    <div class="form-group">
+                        <label>Title *</label>
+                        <input type="text" id="audiobook-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Narrator *</label>
+                        <input type="text" id="audiobook-narrator" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Related Book ID</label>
+                        <input type="text" id="audiobook-book-id" placeholder="Link to existing book">
+                    </div>
+                    <div class="form-group">
+                        <label>Language *</label>
+                        <select id="audiobook-language" required>
+                            <option value="">Select Language</option>
+                            <option value="ar">Arabic</option>
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cover Image *</label>
+                        <input type="file" id="audiobook-cover" accept="image/*" required>
+                    </div>
+
+                    <h4>Chapters</h4>
+                    <div id="chapters-container">
+                        <div class="chapter-item">
+                            <input type="text" placeholder="Chapter Title" class="chapter-title" required>
+                            <input type="file" accept="audio/*" class="chapter-file" required>
+                            <button type="button" onclick="removeChapter(this)">Remove</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addChapter()">+ Add Chapter</button>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Audiobook</button>
+                        <button type="button" class="btn-secondary" onclick="hideAddAudiobookForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Audiobooks List -->
+            <div id="audiobooks-list" class="items-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cover</th>
+                            <th>Title</th>
+                            <th>Narrator</th>
+                            <th>Language</th>
+                            <th>Chapters</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="audiobooks-table-body">
+                        <!-- Audiobooks will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Daily Quotes Tab -->
+        <div id="quotes-tab" class="tab-content">
+            <div class="section-header">
+                <h2>Manage Daily Quotes</h2>
+                <button class="btn-primary" onclick="showAddQuoteForm()">+ Add New Quote</button>
+            </div>
+
+            <!-- Add Quote Form -->
+            <div id="add-quote-form" class="form-container" style="display: none;">
+                <h3>Add New Daily Quote</h3>
+                <form id="quoteForm">
+                    <div class="form-group">
+                        <label>Quote Text (Arabic) *</label>
+                        <textarea id="quote-text-ar" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Quote Text (English)</label>
+                        <textarea id="quote-text-en" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Quote Text (French)</label>
+                        <textarea id="quote-text-fr" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Source/Reference</label>
+                        <input type="text" id="quote-source">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Quote</button>
+                        <button type="button" class="btn-secondary" onclick="hideAddQuoteForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Quotes List -->
+            <div id="quotes-list" class="items-list">
+                <div id="quotes-container">
+                    <!-- Quotes will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
